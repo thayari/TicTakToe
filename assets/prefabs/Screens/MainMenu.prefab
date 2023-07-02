@@ -490,12 +490,13 @@
     "__prefab": {
       "__id__": 34
     },
+    "screenType": 0,
     "startGameButton": null,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "f7KroCcIdLwoEoABvFglhL"
+    "fileId": "1aOyiEeHRIYoAR4b6vG3FH"
   },
   {
     "__type__": "cc.PrefabInfo",

@@ -8,19 +8,24 @@
       "__id__": 1
     },
     "optimizationPolicy": 0,
-    "asyncLoadAssets": false,
-    "persistent": false
+    "persistent": false,
+    "asyncLoadAssets": false
   },
   {
     "__type__": "cc.Node",
     "_name": "GameField",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_parent": null,
     "_children": [],
     "_active": true,
-    "_components": [],
+    "_components": [
+      {
+        "__id__": 2
+      }
+    ],
     "_prefab": {
-      "__id__": 2
+      "__id__": 4
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -49,6 +54,23 @@
       "z": 0
     },
     "_id": ""
+  },
+  {
+    "__type__": "6d478ciWgFAmK7AXaR/DMSu",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 3
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "36R+PMLGtPLI8kAAoQQnA6"
   },
   {
     "__type__": "cc.PrefabInfo",

@@ -1,11 +1,13 @@
 import { _decorator, Button, Component, Node } from 'cc';
-import { ScreenType } from './GameManager';
+import { Screen } from './Screen';
+import ScreenType from './ScreenType';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainMenu')
-export class MainMenu extends Component {
-	@property
-	public screenType = ScreenType.MAIN_MENU
+export class MainMenu extends Screen {
+	@property ({ type: ScreenType, override: true })
+	public screenType = ScreenType.MainMenu
+
 	@property ({ type: Button })
 	protected startGameButton: Button = null
 
@@ -17,9 +19,9 @@ export class MainMenu extends Component {
         
     }
 		
-		onStartGameButtonClick(): void {
+	onStartGameButtonClick(): void {
 
-		}
+	}
 }
 
 

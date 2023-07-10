@@ -142,7 +142,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 928.6736842105263,
+    "_orthoHeight": 320,
     "_near": 0,
     "_far": 1000,
     "_color": {
@@ -302,6 +302,7 @@
         "__expectedType__": "cc.Prefab"
       }
     ],
+    "gridSize": 3,
     "_id": "6aio6MWJhGjKbtSxYOy6ff"
   },
   {

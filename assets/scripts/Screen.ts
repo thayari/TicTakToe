@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Screen')
 export class Screen extends Component {
-    @property ({ type: ScreenType, override: true })
+	@property ({ type: ScreenType, override: true })
 	public screenType = ScreenType.MainMenu
 }
 

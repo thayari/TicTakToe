@@ -99,7 +99,7 @@
     "__prefab": {
       "__id__": 5
     },
-    "_resizeMode": 0,
+    "_resizeMode": 2,
     "_layoutType": 3,
     "_cellSize": {
       "__type__": "cc.Size",

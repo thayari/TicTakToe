@@ -1,7 +1,7 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, instantiate, Label, Node, Prefab } from 'cc';
 import { Screen } from './Screen';
 import ScreenType from './ScreenType';
-import { GameEventManager } from './GameEvents';
+import { eventTarget, GameEvent, GameEventManager } from './GameEvents';
 import { GameManager } from './GameManager';
 
 const { ccclass, property } = _decorator;
@@ -25,18 +25,23 @@ export class GameFieldScreen extends Screen {
 	@property ({ type: Node })
 	protected grid = null
 
-	@property ({ type: Node })
+	@property ({ type: Prefab })
 	protected cell = null
+
+	@property ({ type: Label })
+	protected winnerLabel = null
 
 	private state: Array<Array<number>> | null = null
 
-	start() {
-		const gridSize: number = GameManager.instance.gridSize
+	start(): void {
+		eventTarget.on(GameEvent.STATE_CHANGE, this._render, this)
 
-		this.state = this._generateGrid(gridSize)
+		this._generateGrid()
 	}
 
-	private _generateGrid(size, randomise = false): Array<Array<number>> {
+	private _generateGrid(randomise = false): void {
+		const size: number = GameManager.instance.gridSize
+
 		const grid = []
 
 		for (let i = 0; i < size; i++) {
@@ -53,27 +58,41 @@ export class GameFieldScreen extends Screen {
 	
 			grid.push(row)
 		}
-		
-		return grid
+
+		GameManager.instance.state = grid
 	}
 
 	private _render() {
-		if (this.state) {
-			const values = this.state.flat()
+		const state = GameManager.instance.state
 
+		if (state) {
+			this.grid.removeAllChildren()
+			const values = state.flat()
 
+			values.forEach(cellValue => {
+				const cellNode = instantiate(this.cell)
+
+				cellNode.parent = this.grid
+
+				cellNode.getComponent('Cell').updateValue(cellValue)
+			})
 		}
 	}
 
-	onFillButtonClick(): void {
+	public updateWinnerLabel(value): void {
+		this.winnerLabel.string = `Winner: ${value}`
+	}
+
+	public onFillButtonClick(): void {
+		this._generateGrid(true)
 		GameEventManager.sendRandomizeToggle()
 	}
 
-	onCheckButtonClick(): void {
+	public onCheckButtonClick(): void {
 		GameEventManager.sendCalculateToggle()
 	}
 
-	onBackButtonClick(): void {
+	public onBackButtonClick(): void {
 		GameEventManager.sendSwitchScreen(ScreenType.MainMenu)
 	}
 }

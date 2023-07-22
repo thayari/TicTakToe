@@ -1,26 +1,17 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, tween, UIOpacity } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Cell')
 export class Cell extends Component {
-    @property ({ type: Node })
-	protected figure1: Node = null
+	@property ({ type: Node })
+	protected figures: Node[] = []
 
-    @property ({ type: Node })
-	protected figure2: Node = null
+	updateValue(value: number) {
+		if (value > 0) {
+			const figure = this.figures[value - 1]
 
-    private _figureType: number
-
-    public row: number
-    public column: number
-
-    start() {
-
-    }
-
-    update(random: number) {
-        this._figureType = random
-    }
+			figure.active = true
+			figure.getComponent(UIOpacity).opacity = 255
+		}
+	}
 }
-
-

@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab } from 'cc';
+import { _decorator, Component, Enum, instantiate, Label, Node, Prefab } from 'cc';
 import { Screen } from './Screen';
 import ScreenType from './ScreenType';
 import { eventTarget, GameEvent, GameEventManager } from './GameEvents';
@@ -7,6 +7,12 @@ import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 const VALUES = 2
+
+const playerTypes = Enum({
+	'draw': 0,
+	'X': 1,
+	'O': 2
+}) 
 
 @ccclass('GameFieldScreen')
 export class GameFieldScreen extends Screen {
@@ -30,8 +36,6 @@ export class GameFieldScreen extends Screen {
 
 	@property ({ type: Label })
 	protected winnerLabel = null
-
-	private state: Array<Array<number>> | null = null
 
 	start(): void {
 		eventTarget.on(GameEvent.STATE_CHANGE, this._render, this)
@@ -80,7 +84,7 @@ export class GameFieldScreen extends Screen {
 	}
 
 	public updateWinnerLabel(value): void {
-		this.winnerLabel.string = `Winner: ${value}`
+		this.winnerLabel.string = `Winner: ${playerTypes[value]}`
 	}
 
 	public onFillButtonClick(): void {

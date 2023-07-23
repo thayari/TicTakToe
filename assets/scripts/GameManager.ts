@@ -1,7 +1,8 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, CCInteger, Component, instantiate, Node, Prefab } from 'cc';
 import { Screen } from './Screen';
 import ScreenType from './ScreenType';
 import { eventTarget, GameEvent, GameEventManager } from './GameEvents';
+import { GameFieldScreen } from './GameFieldScreen';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -12,8 +13,8 @@ export class GameManager extends Component {
 	@property({ type: Prefab, group: { name: 'Screens' } })
 	protected uiScreens: Prefab[] = [];
 
-	@property({ type: Number })
-	public gridSize: number
+	@property({ type: CCInteger })
+	public gridSize: number = 3
 
 	private static _instance: GameManager = null;
 
@@ -24,12 +25,12 @@ export class GameManager extends Component {
 
 	start() {
 		if (GameManager._instance !== null) {
-      console.warn('GameManager already has an instance. Destroying new instance.')
-      this.node.destroy()
-      return
-    }
+			console.warn('GameManager already has an instance. Destroying new instance.')
+			this.node.destroy()
+			return
+		}
 
-    GameManager._instance = this
+		GameManager._instance = this
 
 		this._createScreens()
 		this._showScreen(ScreenType.MainMenu)
@@ -62,69 +63,42 @@ export class GameManager extends Component {
 		})
 	}
 
-	
 	private _calculateResult(): void {
 		const size: number = GameManager.instance.gridSize
 		const grid = this.state
 		const matches = []
-		let sample: number
-		let match: boolean = true
 		
-		// check rows
-		for (let k = 0; k < size; k ++) {    
-			sample = grid[k][0]
-			match = true
-			
-			for (let i = 1; i < size; i ++) {
-				if (grid[k][i] != sample) {
-					match = false
-					break
-				} 
-			}
-			
-			if (match) matches.push(sample)
-		}
+		// Helper function to check if all elements in an array are the same
+		const allElementsMatch = (arr: number[]): boolean => arr.every((item) => item === arr[0])
 		
-		// check columns
-		for (let k = 0; k < size; k ++) {
-			sample = grid[0][k]
-			match = true
-			
-			for (let i = 1; i < size; i ++) {
-				if (grid[i][k] != sample) {
-					match = false
-					break
-				} 
-			}
-			
-			if (match) matches.push(sample)
-		}
-		
-		// check diagonals
-		sample = grid[0][0]
-		match = true
-		for (let i = 0; i < size; i ++) {
-			if (grid[i][i] != sample) {
-				match = false
-				break
+		// Check rows
+		for (let k = 0; k < size; k++) {
+			if (allElementsMatch(grid[k])) {
+				matches.push(grid[k][0])
 			}
 		}
 		
-		if (match) matches.push(sample)
-		
-		sample = grid[0][size - 1]
-		match = true
-		for (let i = size - 1; i >= 0; i --) {
-			if (grid[i][i] != sample) {
-				match = false
-				break
+		// Check columns
+		for (let k = 0; k < size; k++) {
+			const column = grid.map(row => row[k]);
+			if (allElementsMatch(column)) {
+				matches.push(column[0])
 			}
 		}
 		
-		if (match) matches.push(sample)
+		// Check main diagonal
+		const mainDiagonal = grid.map((row, i) => row[i]);
+		if (allElementsMatch(mainDiagonal)) {
+			matches.push(mainDiagonal[0])
+		}
 		
-		const winner = this._getWinner(matches)
-
+		// Check secondary diagonal
+		const secondaryDiagonal = grid.map((row, i) => row[size - 1 - i]);
+		if (allElementsMatch(secondaryDiagonal)) {
+			matches.push(secondaryDiagonal[0])
+		}
+		
+		const winner = this._getWinner(matches);
 		this._showWinner(winner)
 	}
 	
@@ -138,16 +112,18 @@ export class GameManager extends Component {
 	}
 
 	private _showWinner(winner): void {
-		console.log(winner)
+		const gameField: Node = this._screensMap.get(ScreenType.GameField)
+
+		gameField.getComponent(GameFieldScreen).updateWinnerLabel(winner)
 	}
 
 	public static get instance(): GameManager {
-    return GameManager._instance
-  }
+		return GameManager._instance
+	}
 
 	public getGridSize(): number {
-    return this.gridSize
-  }
+		return this.gridSize
+	}
 
 	set state(value) {
 		this._state = value

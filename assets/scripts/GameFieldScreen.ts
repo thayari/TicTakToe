@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, instantiate, Label, Node, Prefab } from 'cc';
+import { _decorator, math, view, Enum, instantiate, Label, Node, Prefab, UITransform, Vec3 } from 'cc';
 import { Screen } from './Screen';
 import ScreenType from './ScreenType';
 import { eventTarget, GameEvent, GameEventManager } from './GameEvents';
@@ -39,6 +39,8 @@ export class GameFieldScreen extends Screen {
 
 	start(): void {
 		eventTarget.on(GameEvent.STATE_CHANGE, this._render, this)
+
+		this._resizeLayout()
 
 		this._generateGrid()
 	}
@@ -81,6 +83,10 @@ export class GameFieldScreen extends Screen {
 				cellNode.getComponent('Cell').updateValue(cellValue)
 			})
 		}
+		else {
+			this.grid.removeAllChildren()
+			this._generateGrid()
+		}
 	}
 
 	public updateWinnerLabel(value): void {
@@ -97,7 +103,27 @@ export class GameFieldScreen extends Screen {
 	}
 
 	public onBackButtonClick(): void {
+		GameManager.instance.state = null
+
 		GameEventManager.sendSwitchScreen(ScreenType.MainMenu)
+	}
+
+	private _resizeLayout(): void {
+		const winSize: math.Size = view.getVisibleSizeInPixel()
+		const windowWidth: number = winSize.width
+		const windowHeight: number = winSize.height
+
+		if (windowHeight < windowWidth) {
+			const gridHeight: number = this.grid.getComponent(UITransform).height
+
+			if (gridHeight > windowHeight) {
+				const scale = windowHeight / gridHeight - 0.3
+				const vec3scale = new Vec3(scale, scale, 1)
+				this.node.children.forEach(element => {
+					element.setScale(vec3scale)
+				})
+			}
+		}
 	}
 }
 

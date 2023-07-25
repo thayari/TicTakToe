@@ -5,14 +5,4 @@ const { ccclass, property } = _decorator;
 export class Grid extends Component {
     @property ({ type: Prefab })
     protected cell: Prefab = null
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-        
-    }
 }
-
-

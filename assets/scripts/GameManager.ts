@@ -39,11 +39,13 @@ export class GameManager extends Component {
 		eventTarget.on(GameEvent.CALCULATE_TOGGLE, this._calculateResult, this)
 	}
 
-	public switchScreen(screenToOpen): void {
-		this._showScreen(screenToOpen)
-	}
-
-	private _showScreen(screenType): void {
+	/**
+	 * Switches to the specified screen type by removing the current screen from its parent,
+	 * retrieving the new screen node from _screensMap, and setting it as a child of rootNode.
+	 * 
+	 * @param screenType - The type of the screen to switch to.
+	 */
+	private _showScreen(screenType: number): void {
 		if (this._currentScreen) {
 			this._currentScreen.removeFromParent()
 		}
@@ -53,19 +55,26 @@ export class GameManager extends Component {
 		this._currentScreen.setParent(this.rootNode)
 	}
 
+	/**
+	 * Creates screens using the provided prefab list.
+	 */
 	private _createScreens(): void {
 		this._screensMap.clear();
 
 		this.uiScreens.forEach(prefab => {
 			const node: Node = instantiate(prefab)
 
-			this._screensMap.set(node.getComponent(Screen).screenType, node)
+			const screenComponent: Screen = node.getComponent(Screen)
+
+			if (screenComponent && screenComponent.screenType !== undefined) {
+				this._screensMap.set(screenComponent.screenType, node)
+			}
 		})
 	}
 
 	private _calculateResult(): void {
 		const size: number = GameManager.instance.gridSize
-		const grid = this.state
+		const grid: number[][] = this.state
 		const matches = []
 		
 		// Helper function to check if all elements in an array are the same
@@ -119,6 +128,10 @@ export class GameManager extends Component {
 
 	public static get instance(): GameManager {
 		return GameManager._instance
+	}
+
+	public switchScreen(screenToOpen): void {
+		this._showScreen(screenToOpen)
 	}
 
 	public getGridSize(): number {
